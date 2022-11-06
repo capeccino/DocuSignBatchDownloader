@@ -1,0 +1,52 @@
+Create a file called "config.json" in the same directory as the executable. 
+Copy in the following contents and replace values as needed:
+{
+  "ClientId": "<your app integration key",
+  "ClientSecret": "your app secret",
+  "RedirectUri": "your app redirect uri",
+  "OAuthBase": "https://account-d.docusign.com/oauth",
+  "TopLevelDirectory": ".", 
+  "TokenExpiration": 8,
+  "ClearPreviousDownloads": true,
+  "DownloadMode": "combined",
+  "DownloadIntervalMilliseconds": 0,
+  "FailOnFirstError": false,
+  "Browser": "edge"
+  "UsePrivate": false,
+  "EnvelopeOptions": {
+    "fromDate": "2000-01-01",
+    "fromToStatus": "Completed",
+    "status": "completed",
+    "count": "10000",
+    "startPosition": "0",
+    "folderTypes": "normal,inbox,sentitems",
+    "order": "asc",
+    "orderBy": "subject"
+  }
+}
+
+Explanations (don't copy this into your config.json file...):
+{
+  "ClientId": "<your app integration key", [You need to set up a DocuSign developer account and configure a new app to get this.]
+  "ClientSecret": "your app secret", [Once you create an app in the dev portal, you can assign a secret. Copy and paste it to this config.]
+  "RedirectUri": "your app redirect uri", [Configured in the DocuSign dev portal for the app you set up]
+  "OAuthBase": "https://account-d.docusign.com/oauth", [The DocuSign OAuth base URI. Default here is the demo account URL, remove the "-d" for production after the Go-Live process]
+  "TopLevelDirectory": ".", [The directory that will hold everything the app creates.]
+  "TokenExpiration": 8, [DocuSign access tokens expire in 8 hours, but that could change. This setting tells the app to not attempt another auth if run again within this timeframe.]
+  "ClearPreviousDownloads": true, [Will clobber previous downloads if true.]
+  "DownloadMode": "combined", [Whether to receive files as a combined PDF or a zip file. The zip functionality is broken on DocuSign's end, so I don't recommend it. But set this to "archive" if you want to try.]
+  "DownloadIntervalMilliseconds": 0, [How many milliseconds to wait between file downloads. Should be able to remain 0, but adding just in case, for debugging purposes.]
+  "FailOnFirstError": false, [Whether to immediately fail the run on the first occurrence of a failure to download documents for an envelope.]
+  "Browser": "edge", [Only used for Auth. Reports will open in OS default browser. Valid options here are "chrome", "firefox", and "edge". Default "edge" since that's pretty much guaranteed on Windows]
+  "UsePrivate": false, [Whether to open the authentication window in brower's private mode.]
+  "EnvelopeOptions": { [These are the query parameters from DocuSign's lastStatusChanged GET route. You can adjust as needed.]
+    "fromDate": "2000-01-01",
+    "fromToStatus": "Completed",
+    "status": "completed",
+    "count": "10000",
+    "startPosition": "0",
+    "folderTypes": "normal,inbox,sentitems",
+    "order": "asc",
+    "orderBy": "subject"
+  }
+}
