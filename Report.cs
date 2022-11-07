@@ -22,8 +22,14 @@ namespace DSBatchDownloader
     public string FileName { get; set; } = string.Empty;
     public long ResponseSize { get; set; }
     public long FileSize { get; set; } = 0;
-    public bool Verified => FileSize > 0 && Math.Abs(ResponseSize - FileSize) < 10; //arbitrary allowance of 10 bytes
     public Exception? Exception { get; set; }
+    public bool Verified { get; set; } = false;
+
+    public void Verify(int allowance)
+    {
+      if(FileSize > 0 && Math.Abs(ResponseSize - FileSize) <= allowance)
+        Verified = true;
+    }
   }
 
   public static class ReportBuilder

@@ -1,5 +1,7 @@
 # DocuSign Batch Downloader Tool
 
+## MUST HAVE A PAID DOCUSIGN API ACCOUNT TO USE THIS!
+
 ## Overview
 
 As of late 2022, DocuSign does not provide the ability to batch download files from an account. This tool uses DocuSign's eSignature API through the C# SDK to provide the batch download functionality.
@@ -47,7 +49,7 @@ The steps the tool moves through are as follows:
 3. Go through OAuth process. A browser will open for you to log into the account you want to download docs from, and an HTTP listener is opened behind the scenes to wait for DocuSign to redirect to it with an auth code. If you successfully log in, OAuth will succeed and this process ends with a file called authInfo.json being created. The purpose of the file is so that if you want to make tweaks in the config file and run the tool again, you don't need to authenticate again for the life of the token (currently 8 hours, according to DocuSign).
 4. After OAuth succeeds, get all the envelopes according to the filters set in the config file.
 5. Loops through each envelope and download its documents as either a combined PDF or a zip archive, according to settings. I have found the archive functionality to be broken on DocuSign's end (it returns nothing on some envelopes that do have documents, even if the API is called directly with a tool like Postman). So I recommend using "combined". Files are saved to the DownloadedFiles and verified.
-6. A report is written and opens in the OS default browser.
+6. A report is written and opens in the specified browser in the config file, or the OS default browser if the config file can't be found or has an invalid entry.
 
 ## Limitations
 

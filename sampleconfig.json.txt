@@ -10,6 +10,7 @@ Copy in the following contents and replace values as needed:
   "ClearPreviousDownloads": true,
   "DownloadMode": "combined",
   "DownloadIntervalMilliseconds": 0,
+  "VerificationAllowance": 0,
   "FailOnFirstError": false,
   "Browser": "edge"
   "UsePrivate": false,
@@ -36,8 +37,9 @@ Explanations (don't copy this into your config.json file...):
   "ClearPreviousDownloads": true, [Will clobber previous downloads if true.]
   "DownloadMode": "combined", [Whether to receive files as a combined PDF or a zip file. The zip functionality is broken on DocuSign's end, so I don't recommend it. But set this to "archive" if you want to try.]
   "DownloadIntervalMilliseconds": 0, [How many milliseconds to wait between file downloads. Should be able to remain 0, but adding just in case, for debugging purposes.]
+  "VerificationAllowance": 0, [After download, files are verified on disk. This setting allows for slight variation in byte size between API response and file on disk.]
   "FailOnFirstError": false, [Whether to immediately fail the run on the first occurrence of a failure to download documents for an envelope.]
-  "Browser": "edge", [Only used for Auth. Reports will open in OS default browser. Valid options here are "chrome", "firefox", and "edge". Default "edge" since that's pretty much guaranteed on Windows]
+  "Browser": "edge", [Used for OAuth and the final report. Valid options here are "chrome", "firefox", and "edge". Default "edge" since that's pretty much guaranteed on Windows, but if the config file is missing the report opens in OS default app for HTML files.]
   "UsePrivate": false, [Whether to open the authentication window in brower's private mode.]
   "EnvelopeOptions": { [These are the query parameters from DocuSign's lastStatusChanged GET route. You can adjust as needed.]
     "fromDate": "2000-01-01",

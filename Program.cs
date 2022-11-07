@@ -152,6 +152,7 @@ namespace DSBatchDownloader
         {
           var fileBytes = File.ReadAllBytes($@"{downloadDir}\{fileName}");
           reportResult.FileSize = fileBytes.Length;
+          reportResult.Verify(config.VerificationAllowance);
           if (!reportResult.Verified)
             throw new Exception("File cannot be verified.");
         }
@@ -184,20 +185,41 @@ namespace DSBatchDownloader
     private static void PrintAndOpenReport(ReportDetails report, Config? config)
     {
       var reportHtml = ReportBuilder.BuildReport(report, config);
-      string reportDirectory = ".";
-      try
-      {
-        if(Directory.Exists(config?.TopLevelDirectory))
-          reportDirectory = config.TopLevelDirectory;
-      }
-      catch { }
-      var reportFileName = $@"{reportDirectory}\report{report.RunDate.ToString("MM.dd.yyyy-HH.mm.ss")}.html";
+
+      var reportFileName = $@"{Path.GetFullPath(config?.TopLevelDirectory ?? ".")}\report{report.RunDate.ToString("MM.dd.yyyy-HH.mm.ss")}.html";
       File.WriteAllText(reportFileName, reportHtml);
 
-      var reportProcess = new Process();
-      reportProcess.StartInfo.FileName = reportFileName;
-      reportProcess.StartInfo.UseShellExecute = true;
-      reportProcess.Start();
+      var browserProcess = new Process();
+      browserProcess.StartInfo.UseShellExecute = true;
+
+      if (config == null)
+      {
+        //Don't know which browser is desired, so just use OS default for HTML files (and hope it's a browser).
+        browserProcess.StartInfo.FileName = reportFileName;
+        browserProcess.Start();
+      }
+      else
+      {
+        switch (config!.Browser)
+        {
+          case "edge":
+            browserProcess.StartInfo.FileName = "msedge";
+            browserProcess.StartInfo.Arguments = $@"{(config.UsePrivate ? "-inprivate" : string.Empty)} --new-window ""{reportFileName}""";
+            break;
+          case "chrome":
+            browserProcess.StartInfo.FileName = "chrome";
+            browserProcess.StartInfo.Arguments = $@"{(config.UsePrivate ? "--incognito" : string.Empty)} --new-window ""{reportFileName}""";
+            break;
+          case "firefox":
+            browserProcess.StartInfo.FileName = "firefox";
+            browserProcess.StartInfo.Arguments = $@"{(config.UsePrivate ? "-private-window" : "--new-window")} ""{reportFileName}""";
+            break;
+          default:
+            browserProcess.StartInfo.FileName = reportFileName;
+            break;
+        }
+        browserProcess.Start();
+      }
     }
 
     private static void FailForOverallException(ReportDetails report, Config? config, Exception? ex)

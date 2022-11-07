@@ -15,6 +15,7 @@ namespace DSBatchDownloader
     public string DownloadMode { get; set; } = "combined";
     public int DownloadIntervalMilliseconds { get; set; } = 0;
     public bool FailOnFirstError { get; set; } = false;
+    public int VerificationAllowance { get; set; } = 0;
     public string Browser { get; set; } = "edge";
     public bool UsePrivate { get; set; } = false;
     public EnvelopesApi.ListStatusChangesOptions EnvelopeOptions { get; set; } = new EnvelopesApi.ListStatusChangesOptions()
